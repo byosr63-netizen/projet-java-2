@@ -19,7 +19,9 @@ public class PlatController {
 
     public void supprimerPlat(int id) {
         Plat p = platDAO.findById(id);
-        if (p != null) platDAO.delete(p);
+        if (p != null) {
+        	platDAO.delete(p.getIdplat());;
+        }
     }
 
     public List<Plat> getAllPlats() {

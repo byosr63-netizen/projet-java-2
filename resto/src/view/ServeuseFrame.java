@@ -2,6 +2,7 @@ package view;
 
 import controller.CommandeController;
 import controller.FactureController;
+import controller.MenuController;
 import model.*;
 
 import javax.swing.*;
@@ -12,6 +13,7 @@ public class ServeuseFrame extends JFrame {
 
     private CommandeController controller = CommandeController.getInstance();
     private FactureController factureController = new FactureController();
+    private MenuController menuController = new MenuController();
 
     private DefaultListModel<String> modelRecues = new DefaultListModel<>();
     private DefaultListModel<String> modelCours = new DefaultListModel<>();
@@ -22,6 +24,10 @@ public class ServeuseFrame extends JFrame {
     private JList<String> listCours = new JList<>(modelCours);
     private JList<String> listPrete = new JList<>(modelPrete);
     private JList<String> listServie = new JList<>(modelServie);
+
+    // ================= MENU (PLATS) =================
+    private DefaultListModel<String> modelPlats = new DefaultListModel<>();
+    private JList<String> listPlats = new JList<>(modelPlats);
 
     public ServeuseFrame() {
 
@@ -36,6 +42,9 @@ public class ServeuseFrame extends JFrame {
         tabs.add("En cours", new JScrollPane(listCours));
         tabs.add("Prêtes", new JScrollPane(listPrete));
         tabs.add("Servies", new JScrollPane(listServie));
+
+        // ✅ AJOUT ONGLET MENU
+        tabs.add("Menu", panelMenu());
 
         JButton servir = new JButton("Servir");
         JButton facture = new JButton("Facture");
@@ -53,17 +62,12 @@ public class ServeuseFrame extends JFrame {
         servir.addActionListener(e -> {
 
             int i = listPrete.getSelectedIndex();
-            if (i == -1) {
-                JOptionPane.showMessageDialog(this, "Sélectionne une commande prête !");
-                return;
-            }
+            if (i == -1) return;
 
             int id = extractId(modelPrete.get(i));
 
             if (controller.passerServie(id)) {
                 JOptionPane.showMessageDialog(this, "Commande SERVIE !");
-            } else {
-                JOptionPane.showMessageDialog(this, "Transition impossible !");
             }
 
             refresh();
@@ -73,27 +77,40 @@ public class ServeuseFrame extends JFrame {
         facture.addActionListener(e -> {
 
             int i = listServie.getSelectedIndex();
-
-            if (i == -1) {
-                JOptionPane.showMessageDialog(this, "Sélectionne une commande SERVIE !");
-                return;
-            }
+            if (i == -1) return;
 
             int id = extractId(modelServie.get(i));
 
             Facture f = factureController.genererFacture(id);
 
             if (f != null) {
-                new FactureFrame(f); // 🔥 OUVRE FACTURE PROPRE
-            } else {
-                JOptionPane.showMessageDialog(this,
-                        "Erreur ou facture déjà existante !");
+                new FactureFrame(f);
             }
         });
+
         refresh.addActionListener(e -> refresh());
 
         refresh();
         setVisible(true);
+    }
+
+    // ================= MENU PANEL =================
+    private JPanel panelMenu() {
+
+        JPanel p = new JPanel(new BorderLayout());
+
+        listPlats.setFont(new Font("Arial", Font.PLAIN, 16));
+
+        JButton refreshMenu = new JButton("Actualiser");
+
+        p.add(new JScrollPane(listPlats), BorderLayout.CENTER);
+        p.add(refreshMenu, BorderLayout.SOUTH);
+
+        refreshMenu.addActionListener(e -> refreshMenu());
+
+        refreshMenu();
+
+        return p;
     }
 
     // ================= REFRESH =================
@@ -104,7 +121,6 @@ public class ServeuseFrame extends JFrame {
         modelPrete.clear();
         modelServie.clear();
 
-        // reçues = DEMANDEE
         for (Commande c : controller.getDemandee())
             modelRecues.addElement(format(c));
 
@@ -118,14 +134,26 @@ public class ServeuseFrame extends JFrame {
             modelServie.addElement(format(c));
     }
 
+    // ================= REFRESH MENU =================
+    private void refreshMenu() {
+
+        modelPlats.clear();
+
+        for (Plat p : controller.getAllPlats()) {
+
+            modelPlats.addElement(
+                    p.getNom() + " | " + p.getPrix() + " DT"
+            );
+        }
+    }
+
     private String format(Commande c) {
         return "Commande #" + c.getIdcommande();
     }
 
     private int extractId(String text) {
         String[] parts = text.split("#");
-        String idPart = parts[1].split(" ")[0];
-        return Integer.parseInt(idPart);
+        return Integer.parseInt(parts[1].split(" ")[0]);
     }
 
     public static void main(String[] args) {

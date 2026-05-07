@@ -6,9 +6,8 @@ import model.User;
 public class UserController {
 
     private UserDAO userDAO = new UserDAO();
-    private User currentUser; // ❌ PAS static
+    private User currentUser;
 
-    // ================= LOGIN =================
     public boolean login(String name, String password) {
 
         User u = userDAO.findByUsernameAndPassword(name, password);
@@ -21,13 +20,15 @@ public class UserController {
         return false;
     }
 
-    // ================= CURRENT USER =================
     public User getCurrentUser() {
         return currentUser;
     }
 
-    // ================= ROLE =================
     public String getRole() {
         return (currentUser != null) ? currentUser.getRole().name() : null;
+    }
+
+    public void logout() {
+        currentUser = null;
     }
 }

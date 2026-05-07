@@ -13,16 +13,27 @@ public class CommandeDAO implements Idao<Commande> {
     Connection cnx = SingletonConnection.getConnection();
 
     @Override
+   
     public void insert(Commande c) {
-        String sql = "INSERT INTO commande (idcommande, etat, date_commande, id_client, id_serveur) VALUES (?,?,?,?,?)";
+
+        String sql = "INSERT INTO commande (etat, date_commande, id_client, id_serveur) VALUES (?,?,?,?)";
+
         try {
-            PreparedStatement ps = cnx.prepareStatement(sql);
-            ps.setInt(1, c.getIdcommande());
-            ps.setString(2, c.getEtat().name());
-            ps.setTimestamp(3, Timestamp.valueOf(c.getDateCommande()));
-            ps.setInt(4, c.getIdClient());
-            ps.setInt(5, c.getIdServeur());
+            PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            ps.setString(1, c.getEtat().name());
+            ps.setTimestamp(2, Timestamp.valueOf(c.getDateCommande()));
+            ps.setInt(3, c.getIdClient());
+            ps.setInt(4, c.getIdServeur());
+
             ps.executeUpdate();
+
+            // ✅ récupérer ID généré automatiquement
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                c.setIdcommande(rs.getInt(1));
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

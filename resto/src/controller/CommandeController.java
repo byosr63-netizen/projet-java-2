@@ -11,6 +11,7 @@ import java.util.List;
 
 public class CommandeController {
 
+    // ================= SINGLETON =================
     private static CommandeController instance;
 
     public static CommandeController getInstance() {
@@ -20,13 +21,17 @@ public class CommandeController {
         return instance;
     }
 
+    // ================= DAO =================
     private CommandeDAO commandeDAO = new CommandeDAO();
     private LigneCommandeDAO ligneDAO = new LigneCommandeDAO();
     private PlatDAO platDAO = new PlatDAO();
 
+    // ================= PANIER =================
     private List<LigneCommande> panier = new ArrayList<>();
 
-    // ================= PANIER =================
+    // ==================================================
+    // ================= PANIER METHODS ==================
+    // ==================================================
 
     public List<LigneCommande> getPanier() {
         return panier;
@@ -62,6 +67,7 @@ public class CommandeController {
 
         for (LigneCommande l : panier) {
             if (l.getIdplat() == idPlat) {
+
                 if (l.getQuantite() > 1) {
                     l.setQuantite(l.getQuantite() - 1);
                 } else {
@@ -73,8 +79,6 @@ public class CommandeController {
 
         if (target != null) panier.remove(target);
     }
-
-    // ================= TOTAL PANIER =================
 
     public double calculerTotalPanier() {
 
@@ -92,7 +96,9 @@ public class CommandeController {
         return total;
     }
 
-    // ================= VALIDATION =================
+    // ==================================================
+    // ================= COMMANDES =======================
+    // ==================================================
 
     public Commande validerCommande(int idCommande, int idClient, int idServeur) {
 
@@ -108,20 +114,53 @@ public class CommandeController {
 
         commandeDAO.insert(c);
 
-     // récupérer vrai id généré
-     int realId = c.getIdcommande();
+        int realId = c.getIdcommande();
 
-     for (LigneCommande l : panier) {
-         l.setIdcommande(realId);
-         ligneDAO.insert(l);
-     }
-
+        for (LigneCommande l : panier) {
+            l.setIdcommande(realId);
+            ligneDAO.insert(l);
+        }
 
         panier.clear();
         return c;
     }
 
-    // ================= ETATS =================
+    public Commande getCommandeById(int id) {
+        return commandeDAO.findById(id);
+    }
+
+    public List<Commande> getCommandesParEtat(EtatCommande etat) {
+
+        List<Commande> res = new ArrayList<>();
+
+        for (Commande c : commandeDAO.getAll()) {
+            if (c.getEtat() == etat) {
+                res.add(c);
+            }
+        }
+
+        return res;
+    }
+
+    public List<Commande> getDemandee() {
+        return getCommandesParEtat(EtatCommande.DEMANDEE);
+    }
+
+    public List<Commande> getEnCours() {
+        return getCommandesParEtat(EtatCommande.EN_COURS);
+    }
+
+    public List<Commande> getPrete() {
+        return getCommandesParEtat(EtatCommande.PRETE);
+    }
+
+    public List<Commande> getServie() {
+        return getCommandesParEtat(EtatCommande.SERVIE);
+    }
+
+    // ==================================================
+    // ================= ETATS ===========================
+    // ==================================================
 
     public boolean passerEnCours(int id) {
         return updateEtat(id, EtatCommande.EN_COURS);
@@ -142,10 +181,26 @@ public class CommandeController {
 
         c.setEtat(etat);
         commandeDAO.update(c);
+
         return true;
     }
 
-    // ================= FACTURE TOTAL (FIX FINAL) =================
+    public boolean annulerTraitement(int idCommande) {
+
+        Commande c = commandeDAO.findById(idCommande);
+        if (c == null) return false;
+
+        if (c.getEtat() != EtatCommande.EN_COURS) return false;
+
+        c.setEtat(EtatCommande.DEMANDEE);
+        commandeDAO.update(c);
+
+        return true;
+    }
+
+    // ==================================================
+    // ================= FACTURE =========================
+    // ==================================================
 
     public double getTotalCommande(int idCommande) {
 
@@ -154,9 +209,7 @@ public class CommandeController {
         List<LigneCommande> lignes = ligneDAO.getAll();
 
         for (LigneCommande l : lignes) {
-
             if (l.getIdcommande() == idCommande) {
-
                 total += l.getQuantite() * l.getPrixUnitaire();
             }
         }
@@ -164,35 +217,13 @@ public class CommandeController {
         return total;
     }
 
-    // ================= COMMANDES =================
+    // ==================================================
+    // ================= PLATS (CUISINIER) ==============
+    // ==================================================
 
-    public List<Commande> getCommandesParEtat(EtatCommande etat) {
-
-        List<Commande> res = new ArrayList<>();
-
-        for (Commande c : commandeDAO.getAll()) {
-            if (c.getEtat() == etat) {
-                res.add(c);
-            }
-        }
-
-        return res;
-    }
-
-    public List<Commande> getDemandee() { return getCommandesParEtat(EtatCommande.DEMANDEE); }
-    public List<Commande> getEnCours() { return getCommandesParEtat(EtatCommande.EN_COURS); }
-    public List<Commande> getPrete() { return getCommandesParEtat(EtatCommande.PRETE); }
-    public List<Commande> getServie() { return getCommandesParEtat(EtatCommande.SERVIE); }
-
-    public Commande getCommandeById(int id) {
-        return commandeDAO.findById(id);
-    }
-
-    // ================= FIX IMPORTANT =================
     public List<Plat> getAllPlats() {
         return platDAO.getAll();
     }
- // ================= GESTION PLATS (FIX POUR CUISINIER) =================
 
     public boolean ajouterPlat(int id, String nom, double prix, boolean disponible, int idMenu, String image) {
 
@@ -225,20 +256,7 @@ public class CommandeController {
         Plat p = platDAO.findById(id);
         if (p == null) return false;
 
-        platDAO.delete(p);
-
-        return true;
-    }
-    public boolean annulerTraitement(int idCommande) {
-
-        Commande c = commandeDAO.findById(idCommande);
-        if (c == null) return false;
-
-        // tu autorises seulement si la commande est EN_COURS
-        if (c.getEtat() != EtatCommande.EN_COURS) return false;
-
-        c.setEtat(EtatCommande.DEMANDEE);
-        commandeDAO.update(c);
+        platDAO.delete(p.getIdplat());
 
         return true;
     }

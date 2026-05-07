@@ -14,7 +14,7 @@ public class UserDAO implements Idao<User> {
 
     @Override
     public void insert(User u) {
-        String sql = "INSERT INTO user (id, name, motdepasse, role) VALUES (?,?,?,?)";
+    	String sql = "INSERT INTO user (name, motdepasse, role) VALUES (?,?,?)";
         try {
             PreparedStatement ps = cnx.prepareStatement(sql);
             ps.setInt(1, u.getId());
