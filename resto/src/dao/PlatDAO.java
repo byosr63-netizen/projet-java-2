@@ -14,20 +14,24 @@ public class PlatDAO {
     // ================= INSERT =================
     public void insert(Plat p) {
 
-        String sql = "INSERT INTO plat (idplat, nom, prix, disponible, idmenu, image) VALUES (?,?,?,?,?,?)";
+        String sql = "INSERT INTO plat (nom, prix, disponible, idmenu, image) VALUES (?,?,?,?,?)";
 
         try {
 
-            PreparedStatement ps = cnx.prepareStatement(sql);
+            PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-            ps.setInt(1, p.getIdplat());
-            ps.setString(2, p.getNom());
-            ps.setDouble(3, p.getPrix());
-            ps.setBoolean(4, p.isDisponible());
-            ps.setInt(5, p.getIdmenu());
-            ps.setString(6, p.getImage());
+            ps.setString(1, p.getNom());
+            ps.setDouble(2, p.getPrix());
+            ps.setBoolean(3, p.isDisponible());
+            ps.setInt(4, p.getIdmenu());
+            ps.setString(5, p.getImage());
 
             ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                p.setIdplat(rs.getInt(1));
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

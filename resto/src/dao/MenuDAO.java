@@ -17,13 +17,17 @@ public class MenuDAO {
         String sql = "INSERT INTO menu (nom, description) VALUES (?, ?)";
 
         try {
-
-            PreparedStatement ps = cnx.prepareStatement(sql);
+            PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             ps.setString(1, m.getNom());
             ps.setString(2, m.getDescription());
 
             ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                m.setIdmenu(rs.getInt(1));
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
