@@ -15,7 +15,7 @@ public class UserDAO implements Idao<User> {
     @Override
     public void insert(User u) {
 
-        String sql = "INSERT INTO user (name, motdepasse, role) VALUES (?,?,?)";
+        String sql = "INSERT INTO users (name, motdepasse, role) VALUES (?,?,?)";
 
         try {
             PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);

@@ -7,7 +7,6 @@ import model.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 
 public class ServeuseFrame extends JFrame {
 
@@ -25,9 +24,11 @@ public class ServeuseFrame extends JFrame {
     private JList<String> listPrete = new JList<>(modelPrete);
     private JList<String> listServie = new JList<>(modelServie);
 
-    // ================= MENU (PLATS) =================
     private DefaultListModel<String> modelPlats = new DefaultListModel<>();
     private JList<String> listPlats = new JList<>(modelPlats);
+
+    // ✅ AJOUT NOTIFICATION
+    private int lastSeenPreteCount = 0;
 
     public ServeuseFrame() {
 
@@ -43,7 +44,6 @@ public class ServeuseFrame extends JFrame {
         tabs.add("Prêtes", new JScrollPane(listPrete));
         tabs.add("Servies", new JScrollPane(listServie));
 
-        // ✅ AJOUT ONGLET MENU
         tabs.add("Menu", panelMenu());
 
         JButton servir = new JButton("Servir");
@@ -91,10 +91,15 @@ public class ServeuseFrame extends JFrame {
         refresh.addActionListener(e -> refresh());
 
         refresh();
+
+        // ✅ AUTO REFRESH (OPTION BONUS PROF)
+        Timer timer = new Timer(3000, e -> refresh());
+        timer.start();
+
         setVisible(true);
     }
 
-    // ================= MENU PANEL =================
+    // ================= MENU =================
     private JPanel panelMenu() {
 
         JPanel p = new JPanel(new BorderLayout());
@@ -132,9 +137,28 @@ public class ServeuseFrame extends JFrame {
 
         for (Commande c : controller.getServie())
             modelServie.addElement(format(c));
+
+        // ✅ NOTIFICATION
+        checkNotifications();
     }
 
-    // ================= REFRESH MENU =================
+    // ================= NOTIFICATION =================
+    private void checkNotifications() {
+
+        int currentCount = controller.getPrete().size();
+
+        if (currentCount > lastSeenPreteCount) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    " Nouvelle commande prête !"
+            );
+        }
+
+        lastSeenPreteCount = currentCount;
+    }
+
+    // ================= MENU REFRESH =================
     private void refreshMenu() {
 
         modelPlats.clear();
