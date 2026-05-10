@@ -30,7 +30,7 @@ public class ServeuseFrame extends JFrame {
 
     // ================= PANIER SERVEUSE =================
     // Panier séparé du client !
-    private PanierPanel panierServeuse = new PanierPanel(controller, 2, 2);
+    private PanierPanel panierServeuse = new PanierPanel(controller, 2, 2, "SERVEUR");
 
     public ServeuseFrame() {
 
@@ -104,30 +104,20 @@ public class ServeuseFrame extends JFrame {
 
     // ================= PANEL COMMANDER (comme Client) =================
     private JPanel panelCommander() {
-
         JPanel p = new JPanel(new BorderLayout());
         ThemeUtils.stylePanel(p);
 
         JPanel gridPanel = new JPanel(new GridLayout(0, 3, 15, 15));
         gridPanel.setOpaque(false);
 
-        // Charger les plats avec cartes exactement comme ClientFrame
         for (Plat plat : controller.getAllPlats()) {
-            gridPanel.add(new PlatCardPanel(plat, controller, panierServeuse));
+            gridPanel.add(new PlatCardPanel(plat, controller, panierServeuse, "SERVEUR")); // ✅
         }
 
         JScrollPane scroll = new JScrollPane(gridPanel);
-        scroll.setOpaque(false);
-
-        JSplitPane split = new JSplitPane(
-                JSplitPane.HORIZONTAL_SPLIT,
-                scroll,
-                panierServeuse
-        );
+        JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scroll, panierServeuse);
         split.setDividerLocation(700);
-
         p.add(split, BorderLayout.CENTER);
-
         return p;
     }
 

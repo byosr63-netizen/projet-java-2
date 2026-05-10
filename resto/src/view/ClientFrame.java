@@ -12,7 +12,7 @@ public class ClientFrame extends JFrame {
     private CommandeController controller = CommandeController.getInstance();
 
     private JPanel gridPanel = new JPanel();
-    private PanierPanel panierPanel = new PanierPanel(controller, 1, 1);
+    private PanierPanel panierPanel = new PanierPanel(controller, 1, 1, "CLIENT");
 
     public ClientFrame() {
 
@@ -59,15 +59,10 @@ public class ClientFrame extends JFrame {
     }
 
     private void loadPlats() {
-
         gridPanel.removeAll();
-
-        List<Plat> plats = controller.getAllPlats();
-
-        for (Plat p : plats) {
-            gridPanel.add(new PlatCardPanel(p, controller, panierPanel));
+        for (Plat p : controller.getAllPlats()) {
+            gridPanel.add(new PlatCardPanel(p, controller, panierPanel, "CLIENT")); // ✅
         }
-
         gridPanel.revalidate();
         gridPanel.repaint();
     }

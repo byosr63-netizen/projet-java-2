@@ -10,15 +10,15 @@ public class PanierPanel extends JPanel {
 
     private JTextArea area = new JTextArea();
     private JLabel totalLabel = new JLabel("TOTAL: 0 DT");
-
-    // ✅ idClient et idServeur configurables
     private int idClient;
     private int idServeur;
+    private String role; // ✅ "CLIENT" ou "SERVEUR"
 
-    public PanierPanel(CommandeController controller, int idClient, int idServeur) {
-
+    public PanierPanel(CommandeController controller,
+                       int idClient, int idServeur, String role) {
         this.idClient  = idClient;
         this.idServeur = idServeur;
+        this.role      = role;
 
         setLayout(new BorderLayout());
         setBackground(new Color(255, 240, 245));
@@ -39,25 +39,27 @@ public class PanierPanel extends JPanel {
         bottom.setOpaque(false);
         bottom.add(totalLabel, BorderLayout.CENTER);
         bottom.add(valider,    BorderLayout.EAST);
-
         add(bottom, BorderLayout.SOUTH);
 
         refresh(controller);
 
         valider.addActionListener(e -> {
+            if (controller.getPanier(role).isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Panier vide !");
+                return;
+            }
             int idCommande = (int)(System.currentTimeMillis() % 100000);
-            controller.validerCommande(idCommande, this.idClient, this.idServeur);
+            controller.validerCommande(idCommande, idClient, idServeur, role);
             JOptionPane.showMessageDialog(this, "Commande envoyée !");
             refresh(controller);
         });
     }
 
+    // ✅ refresh avec role
     public void refresh(CommandeController controller) {
-
-        List<LigneCommande> panier = controller.getPanier();
+        List<LigneCommande> panier = controller.getPanier(role);
         area.setText("");
         double total = 0;
-
         for (LigneCommande l : panier) {
             double sub = l.getQuantite() * l.getPrixUnitaire();
             total += sub;
@@ -65,7 +67,6 @@ public class PanierPanel extends JPanel {
                     + " | Qte: " + l.getQuantite()
                     + " | " + sub + " DT\n");
         }
-
         totalLabel.setText("TOTAL: " + total + " DT");
     }
 }

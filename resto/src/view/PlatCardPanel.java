@@ -2,25 +2,21 @@ package view;
 
 import controller.CommandeController;
 import model.Plat;
-
 import javax.swing.*;
 import java.awt.*;
 
 public class PlatCardPanel extends JPanel {
 
-    public PlatCardPanel(Plat plat,
-                         CommandeController controller,
-                         PanierPanel panierPanel) {
+    public PlatCardPanel(Plat plat, CommandeController controller,
+                         PanierPanel panierPanel, String role) { // ✅ role ajouté
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(Color.WHITE);
-        setBorder(BorderFactory.createLineBorder(new Color(236,160,180), 2));
+        setBorder(BorderFactory.createLineBorder(new Color(236, 160, 180), 2));
 
-        // ================= IMAGE SAFE =================
+        // ================= IMAGE =================
         JLabel img = new JLabel();
-
         java.net.URL imgUrl = getClass().getResource("/image/" + plat.getImage());
-
         if (imgUrl != null) {
             ImageIcon icon = new ImageIcon(imgUrl);
             Image scaled = icon.getImage().getScaledInstance(120, 100, Image.SCALE_SMOOTH);
@@ -29,22 +25,18 @@ public class PlatCardPanel extends JPanel {
             img.setText("No Image");
             img.setHorizontalAlignment(SwingConstants.CENTER);
         }
-
         img.setAlignmentX(CENTER_ALIGNMENT);
 
         // ================= INFOS =================
-        JLabel name = new JLabel(plat.getNom());
+        JLabel name  = new JLabel(plat.getNom());
         JLabel price = new JLabel(plat.getPrix() + " DT");
-
         name.setAlignmentX(CENTER_ALIGNMENT);
         price.setAlignmentX(CENTER_ALIGNMENT);
+        price.setForeground(new Color(236, 160, 180));
 
-        price.setForeground(new Color(236,160,180));
-
-        // ================= BUTTONS =================
-        JButton plus = new JButton("+");
+        // ================= BOUTONS =================
+        JButton plus  = new JButton("+");
         JButton minus = new JButton("-");
-
         style(plus);
         style(minus);
 
@@ -53,22 +45,16 @@ public class PlatCardPanel extends JPanel {
         btns.add(minus);
         btns.add(plus);
 
-        // ================= ACTIONS =================
+        // ================= ACTIONS avec role =================
         plus.addActionListener(e -> {
-
-            controller.ajouterPlatAuPanier(plat.getIdplat());
-
+            controller.ajouterPlatAuPanier(plat.getIdplat(), role); // ✅
             panierPanel.refresh(controller);
         });
-
         minus.addActionListener(e -> {
-
-            controller.supprimerPlatDuPanier(plat.getIdplat());
-
+            controller.supprimerPlatDuPanier(plat.getIdplat(), role); // ✅
             panierPanel.refresh(controller);
         });
 
-        // ================= UI =================
         add(img);
         add(name);
         add(price);
@@ -76,7 +62,7 @@ public class PlatCardPanel extends JPanel {
     }
 
     private void style(JButton b) {
-        b.setBackground(new Color(236,160,180));
+        b.setBackground(new Color(236, 160, 180));
         b.setForeground(Color.WHITE);
         b.setFocusPainted(false);
     }
