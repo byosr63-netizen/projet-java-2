@@ -3,9 +3,11 @@ package view;
 import controller.CommandeController;
 import controller.MenuController;
 import model.Commande;
+import model.LigneCommande;
 import model.Menu;
 import model.Plat;
-
+import util.ThemeUtils;
+import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 
@@ -37,7 +39,19 @@ public class CuisinierFrame extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        getContentPane().setBackground(Theme.ROSE_LIGHT);
+
+        ThemeUtils.styleList(listDemande);
+        ThemeUtils.styleList(listCours);
+        ThemeUtils.styleList(listPrete);
+        ThemeUtils.styleList(listServie);
+
+        ThemeUtils.styleList(listPlats);
+        ThemeUtils.styleList(listMenus);
+
         JTabbedPane tabs = new JTabbedPane();
+
+        ThemeUtils.styleTabs(tabs);
 
         tabs.add("Commandes", panelCommandes());
         tabs.add("Plats", panelPlats());
@@ -57,7 +71,11 @@ public class CuisinierFrame extends JFrame {
 
         JPanel p = new JPanel(new BorderLayout());
 
+        ThemeUtils.stylePanel(p);
+
         JTabbedPane sub = new JTabbedPane();
+
+        ThemeUtils.styleTabs(sub);
 
         sub.add("Demandées", new JScrollPane(listDemande));
         sub.add("En cours", new JScrollPane(listCours));
@@ -68,7 +86,14 @@ public class CuisinierFrame extends JFrame {
         JButton cancel = new JButton("Annuler");
         JButton ready = new JButton("Prête");
 
+        ThemeUtils.styleButton(start);
+        ThemeUtils.styleButton(cancel);
+        ThemeUtils.styleButton(ready);
+
         JPanel btns = new JPanel();
+
+        ThemeUtils.stylePanel(btns);
+
         btns.add(start);
         btns.add(cancel);
         btns.add(ready);
@@ -77,26 +102,41 @@ public class CuisinierFrame extends JFrame {
         p.add(btns, BorderLayout.SOUTH);
 
         start.addActionListener(e -> {
+
             int i = listDemande.getSelectedIndex();
+
             if (i == -1) return;
+
             int id = extractId(modelDemande.get(i));
+
             controller.passerEnCours(id);
+
             refreshCommandes();
         });
 
         cancel.addActionListener(e -> {
+
             int i = listCours.getSelectedIndex();
+
             if (i == -1) return;
+
             int id = extractId(modelCours.get(i));
+
             controller.annulerTraitement(id);
+
             refreshCommandes();
         });
 
         ready.addActionListener(e -> {
+
             int i = listCours.getSelectedIndex();
+
             if (i == -1) return;
+
             int id = extractId(modelCours.get(i));
+
             controller.passerPrete(id);
+
             refreshCommandes();
         });
 
@@ -110,13 +150,22 @@ public class CuisinierFrame extends JFrame {
 
         JPanel p = new JPanel(new BorderLayout());
 
+        ThemeUtils.stylePanel(p);
+
         p.add(new JScrollPane(listPlats), BorderLayout.CENTER);
 
         JButton add = new JButton("Ajouter");
         JButton edit = new JButton("Modifier");
         JButton del = new JButton("Supprimer");
 
+        ThemeUtils.styleButton(add);
+        ThemeUtils.styleButton(edit);
+        ThemeUtils.styleButton(del);
+
         JPanel btns = new JPanel();
+
+        ThemeUtils.stylePanel(btns);
+
         btns.add(add);
         btns.add(edit);
         btns.add(del);
@@ -124,47 +173,105 @@ public class CuisinierFrame extends JFrame {
         p.add(btns, BorderLayout.SOUTH);
 
         add.addActionListener(e -> {
+
             try {
+
                 int id = Integer.parseInt(JOptionPane.showInputDialog("ID"));
                 String nom = JOptionPane.showInputDialog("Nom");
                 double prix = Double.parseDouble(JOptionPane.showInputDialog("Prix"));
                 int idMenu = Integer.parseInt(JOptionPane.showInputDialog("ID Menu"));
 
-                controller.ajouterPlat(id, nom, prix, true, idMenu, "default.png");
+                // ================= IMAGE =================
+                JFileChooser chooser = new JFileChooser();
+                chooser.setDialogTitle("Choisir image du plat");
+
+                String image = "default.png";
+
+                int result = chooser.showOpenDialog(this);
+
+                if (result == JFileChooser.APPROVE_OPTION) {
+
+                    java.io.File file = chooser.getSelectedFile();
+                    image = file.getName();
+                }
+
+                controller.ajouterPlat(
+                        id,
+                        nom,
+                        prix,
+                        true,
+                        idMenu,
+                        image
+                );
+
                 refreshPlats();
 
             } catch (Exception ex) {
+
                 JOptionPane.showMessageDialog(this, "Erreur ajout !");
             }
         });
 
         edit.addActionListener(e -> {
+
             int i = listPlats.getSelectedIndex();
             if (i == -1) return;
 
             try {
+
                 int id = extractId(modelPlats.get(i));
                 String nom = JOptionPane.showInputDialog("Nom");
                 double prix = Double.parseDouble(JOptionPane.showInputDialog("Prix"));
                 int idMenu = Integer.parseInt(JOptionPane.showInputDialog("ID Menu"));
 
-                controller.modifierPlat(id, nom, prix, true, idMenu, "default.png");
+                JFileChooser chooser = new JFileChooser();
+                chooser.setDialogTitle("Choisir image");
+
+                String image = "default.png";
+
+                int result = chooser.showOpenDialog(this);
+
+                if (result == JFileChooser.APPROVE_OPTION) {
+
+                    java.io.File file = chooser.getSelectedFile();
+                    image = file.getName();
+                }
+
+                controller.modifierPlat(
+                        id,
+                        nom,
+                        prix,
+                        true,
+                        idMenu,
+                        image
+                );
+
                 refreshPlats();
 
             } catch (Exception ex) {
+
                 JOptionPane.showMessageDialog(this, "Erreur modification !");
             }
         });
-
+    
         del.addActionListener(e -> {
             int i = listPlats.getSelectedIndex();
             if (i == -1) return;
 
             int id = extractId(modelPlats.get(i));
-            controller.supprimerPlat(id);
-            refreshPlats();
-        });
 
+            int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Supprimer ce plat ?",
+                "Confirmation",
+                JOptionPane.YES_NO_OPTION
+            );
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                controller.supprimerPlat(id);
+                refreshPlats();
+            }
+        });
         return p;
     }
 
@@ -175,6 +282,8 @@ public class CuisinierFrame extends JFrame {
 
         JPanel p = new JPanel(new BorderLayout());
 
+        ThemeUtils.stylePanel(p);
+
         p.add(new JScrollPane(listMenus), BorderLayout.CENTER);
 
         JButton add = new JButton("Ajouter");
@@ -182,7 +291,15 @@ public class CuisinierFrame extends JFrame {
         JButton del = new JButton("Supprimer");
         JButton close = new JButton("Fermer");
 
+        ThemeUtils.styleButton(add);
+        ThemeUtils.styleButton(edit);
+        ThemeUtils.styleButton(del);
+        ThemeUtils.styleButton(close);
+
         JPanel btns = new JPanel();
+
+        ThemeUtils.stylePanel(btns);
+
         btns.add(add);
         btns.add(edit);
         btns.add(del);
@@ -191,32 +308,43 @@ public class CuisinierFrame extends JFrame {
         p.add(btns, BorderLayout.SOUTH);
 
         add.addActionListener(e -> {
+
             String nom = JOptionPane.showInputDialog("Nom");
+
             String desc = JOptionPane.showInputDialog("Description");
 
             menuController.ajouterMenu(nom, desc);
+
             refreshMenus();
         });
 
         edit.addActionListener(e -> {
+
             int i = listMenus.getSelectedIndex();
+
             if (i == -1) return;
 
             int id = extractId(modelMenus.get(i));
 
             String nom = JOptionPane.showInputDialog("Nom");
+
             String desc = JOptionPane.showInputDialog("Description");
 
             menuController.modifierMenu(id, nom, desc);
+
             refreshMenus();
         });
 
         del.addActionListener(e -> {
+
             int i = listMenus.getSelectedIndex();
+
             if (i == -1) return;
 
             int id = extractId(modelMenus.get(i));
+
             menuController.supprimerMenu(id);
+
             refreshMenus();
         });
 
@@ -229,43 +357,89 @@ public class CuisinierFrame extends JFrame {
     // REFRESH
     // =====================================================
     private void refreshAll() {
+
         refreshCommandes();
         refreshPlats();
         refreshMenus();
     }
 
     private void refreshCommandes() {
+
         modelDemande.clear();
         modelCours.clear();
         modelPrete.clear();
         modelServie.clear();
 
         for (Commande c : controller.getDemandee())
-            modelDemande.addElement("Commande #" + c.getIdcommande());
+            modelDemande.addElement(formatCommande(c));
 
         for (Commande c : controller.getEnCours())
-            modelCours.addElement("Commande #" + c.getIdcommande());
+            modelCours.addElement(formatCommande(c));
 
         for (Commande c : controller.getPrete())
-            modelPrete.addElement("Commande #" + c.getIdcommande());
+            modelPrete.addElement(formatCommande(c));
 
         for (Commande c : controller.getServie())
-            modelServie.addElement("Commande #" + c.getIdcommande());
+            modelServie.addElement(formatCommande(c));
+    }
+    private String formatCommande(Commande c) {
+
+        StringBuilder details = new StringBuilder();
+
+        details.append("Commande #")
+                .append(c.getIdcommande())
+                .append(" | ");
+
+        List<LigneCommande> lignes = controller.getPanier(); // ❌ on ne l’utilise pas ici mais DAO existe
+
+        boolean found = false;
+
+        for (LigneCommande l : new dao.LigneCommandeDAO().getAll()) {
+
+            if (l.getIdcommande() == c.getIdcommande()) {
+
+                Plat p = new dao.PlatDAO().findById(l.getIdplat());
+
+                if (p != null) {
+
+                    details.append(p.getNom())
+                            .append(" x")
+                            .append(l.getQuantite())
+                            .append(" • ");
+
+                    found = true;
+                }
+            }
+        }
+
+        if (!found) {
+            details.append("Aucun plat");
+        }
+
+        return details.toString();
     }
 
     private void refreshPlats() {
+
         modelPlats.clear();
 
         for (Plat p : controller.getAllPlats()) {
-            modelPlats.addElement("Plat #" + p.getIdplat() + " | " + p.getNom());
+
+            modelPlats.addElement(
+                    "Plat #" + p.getIdplat() + " | " + p.getNom()
+            );
         }
     }
 
     private void refreshMenus() {
+
         modelMenus.clear();
 
         for (Menu m : menuController.getAllMenus()) {
-            modelMenus.addElement("Menu #" + m.getIdmenu() + " | " + m.getNom());
+
+            modelMenus.addElement(
+                    "Menu #" + m.getIdmenu() + " | " + m.getNom()
+            );
         }
     }
 
@@ -273,14 +447,23 @@ public class CuisinierFrame extends JFrame {
     // UTILS
     // =====================================================
     private int extractId(String text) {
+
         try {
-            return Integer.parseInt(text.split("#")[1].split("\\|")[0].trim());
+
+            return Integer.parseInt(
+                    text.split("#")[1]
+                            .split("\\|")[0]
+                            .trim()
+            );
+
         } catch (Exception e) {
+
             return -1;
         }
     }
 
     public static void main(String[] args) {
+
         new CuisinierFrame();
     }
 }

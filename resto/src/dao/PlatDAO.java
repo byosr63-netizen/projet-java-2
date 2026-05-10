@@ -63,21 +63,25 @@ public class PlatDAO {
 
     // ================= DELETE =================
     public void delete(int id) {
-
-        String sql = "DELETE FROM plat WHERE idplat=?";
-
         try {
+            // 1. Supprimer les lignes liées dans ligcmd
+            String sqlLignes = "DELETE FROM ligcmd WHERE idplat=?";
+            PreparedStatement ps1 = cnx.prepareStatement(sqlLignes);
+            ps1.setInt(1, id);
+            ps1.executeUpdate();
 
-            PreparedStatement ps = cnx.prepareStatement(sql);
-
-            ps.setInt(1, id);
-
-            ps.executeUpdate();
+            // 2. Supprimer le plat
+            String sqlPlat = "DELETE FROM plat WHERE idplat=?";
+            PreparedStatement ps2 = cnx.prepareStatement(sqlPlat);
+            ps2.setInt(1, id);
+            ps2.executeUpdate();
 
         } catch (Exception e) {
             e.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(null, "Erreur SQL : " + e.getMessage());
         }
     }
+
 
     // ================= GET ALL =================
     public List<Plat> getAll() {

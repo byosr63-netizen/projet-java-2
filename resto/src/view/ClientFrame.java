@@ -12,7 +12,7 @@ public class ClientFrame extends JFrame {
     private CommandeController controller = CommandeController.getInstance();
 
     private JPanel gridPanel = new JPanel();
-    private PanierPanel panierPanel = new PanierPanel(controller);
+    private PanierPanel panierPanel = new PanierPanel(controller, 1, 1);
 
     public ClientFrame() {
 

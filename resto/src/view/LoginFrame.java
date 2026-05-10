@@ -2,6 +2,7 @@ package view;
 
 import controller.UserController;
 import model.Role;
+import util.ThemeUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,46 +22,50 @@ public class LoginFrame extends JFrame {
         BackgroundPanel panel = new BackgroundPanel("/image/bg.jpg");
         panel.setLayout(null);
 
-        // ================= COLORS =================
-        Color rose = new Color(236, 160, 180);
-        Color roseDark = new Color(219, 112, 147);
-
         // ================= TITLE =================
         JLabel title = new JLabel("LOGIN");
-        title.setFont(new Font("Arial", Font.BOLD, 30));
-        title.setForeground(rose);
-        title.setBounds(180, 80, 200, 40);
+        title.setBounds(160, 80, 200, 40);
+
+        ThemeUtils.styleTitle(title);
+
         panel.add(title);
 
         // ================= USERNAME =================
         JLabel userLabel = new JLabel("Username");
-        userLabel.setForeground(rose);
         userLabel.setBounds(70, 180, 200, 25);
+
+        ThemeUtils.styleText(userLabel);
+
         panel.add(userLabel);
 
         JTextField userField = new JTextField();
         userField.setBounds(70, 210, 300, 35);
+
+        userField.setFont(Theme.TEXT_FONT);
+
         panel.add(userField);
 
         // ================= PASSWORD =================
         JLabel passLabel = new JLabel("Password");
-        passLabel.setForeground(rose);
         passLabel.setBounds(70, 270, 200, 25);
+
+        ThemeUtils.styleText(passLabel);
+
         panel.add(passLabel);
 
         JPasswordField passField = new JPasswordField();
         passField.setBounds(70, 300, 300, 35);
-        panel.add(passField);
 
-        // ================= ROLE =================
-        JLabel roleLabel = new JLabel("Role");
+        passField.setFont(Theme.TEXT_FONT);
+
+        panel.add(passField);
 
         // ================= BUTTON =================
         JButton loginBtn = new JButton("Connexion");
         loginBtn.setBounds(120, 470, 200, 45);
-        loginBtn.setBackground(roseDark);
-        loginBtn.setForeground(Color.WHITE);
-        loginBtn.setFocusPainted(false);
+
+        ThemeUtils.styleButton(loginBtn);
+
         panel.add(loginBtn);
 
         // ================= ACTION =================
@@ -87,11 +92,16 @@ public class LoginFrame extends JFrame {
                 }
 
             } else {
-                JOptionPane.showMessageDialog(this, "Login ou mot de passe incorrect !");
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Login ou mot de passe incorrect !"
+                );
             }
         });
 
         add(panel);
+
         setVisible(true);
     }
 
