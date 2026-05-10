@@ -14,7 +14,7 @@ public class PlatCardPanel extends JPanel {
         setBackground(Color.WHITE);
         setBorder(BorderFactory.createLineBorder(new Color(236, 160, 180), 2));
 
-        // ================= IMAGE =================
+       
         JLabel img = new JLabel();
         java.net.URL imgUrl = getClass().getResource("/image/" + plat.getImage());
         if (imgUrl != null) {
@@ -27,14 +27,14 @@ public class PlatCardPanel extends JPanel {
         }
         img.setAlignmentX(CENTER_ALIGNMENT);
 
-        // ================= INFOS =================
+        
         JLabel name  = new JLabel(plat.getNom());
         JLabel price = new JLabel(plat.getPrix() + " DT");
         name.setAlignmentX(CENTER_ALIGNMENT);
         price.setAlignmentX(CENTER_ALIGNMENT);
         price.setForeground(new Color(236, 160, 180));
 
-        // ================= BOUTONS =================
+      
         JButton plus  = new JButton("+");
         JButton minus = new JButton("-");
         style(plus);
@@ -45,7 +45,7 @@ public class PlatCardPanel extends JPanel {
         btns.add(minus);
         btns.add(plus);
 
-        // ================= ACTIONS avec role =================
+     
         plus.addActionListener(e -> {
             controller.ajouterPlatAuPanier(plat.getIdplat(), role); // ✅
             panierPanel.refresh(controller);

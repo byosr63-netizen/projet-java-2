@@ -28,8 +28,7 @@ public class ServeuseFrame extends JFrame {
 
     private int lastSeenPreteCount = 0;
 
-    // ================= PANIER SERVEUSE =================
-    // Panier séparé du client !
+    
     private PanierPanel panierServeuse = new PanierPanel(controller, 2, 2, "SERVEUR");
 
     public ServeuseFrame() {
@@ -102,7 +101,7 @@ public class ServeuseFrame extends JFrame {
         setVisible(true);
     }
 
-    // ================= PANEL COMMANDER (comme Client) =================
+   
     private JPanel panelCommander() {
         JPanel p = new JPanel(new BorderLayout());
         ThemeUtils.stylePanel(p);
@@ -121,7 +120,7 @@ public class ServeuseFrame extends JFrame {
         return p;
     }
 
-    // ================= PANEL GENERIC =================
+  
     private JPanel panel(DefaultListModel<String> model, JList<String> list) {
         JPanel p = new JPanel(new BorderLayout());
         ThemeUtils.stylePanel(p);
@@ -129,7 +128,7 @@ public class ServeuseFrame extends JFrame {
         return p;
     }
 
-    // ================= REFRESH =================
+ 
     private void refresh() {
 
         modelRecues.clear();
@@ -170,7 +169,7 @@ public class ServeuseFrame extends JFrame {
         return sb.toString();
     }
 
-    // ================= MENU =================
+   
     private JPanel panelMenu() {
 
         JPanel p = new JPanel(new BorderLayout());
@@ -199,7 +198,7 @@ public class ServeuseFrame extends JFrame {
         return p;
     }
 
-    // ================= NOTIF =================
+  
     private void checkNotifications() {
         int current = controller.getPrete().size();
         if (current > lastSeenPreteCount)
@@ -210,7 +209,5 @@ public class ServeuseFrame extends JFrame {
     private int extractId(String text) {
         return Integer.parseInt(text.split("#")[1].split(" ")[0]);
     }
-    public static void main(String[] args) {
-        new ServeuseFrame();
-    }
+
 }

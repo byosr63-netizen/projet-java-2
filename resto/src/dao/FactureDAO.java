@@ -11,7 +11,7 @@ public class FactureDAO implements Idao<Facture> {
 
     Connection cnx = SingletonConnection.getConnection();
 
-    // ================= INSERT =================
+   
     @Override
     public void insert(Facture f) {
 

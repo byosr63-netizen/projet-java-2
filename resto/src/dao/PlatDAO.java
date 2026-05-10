@@ -11,7 +11,7 @@ public class PlatDAO {
 
     Connection cnx = SingletonConnection.getConnection();
 
-    // ================= INSERT =================
+   
     public void insert(Plat p) {
 
         String sql = "INSERT INTO plat (nom, prix, disponible, idmenu, image) VALUES (?,?,?,?,?)";
@@ -38,7 +38,7 @@ public class PlatDAO {
         }
     }
 
-    // ================= UPDATE =================
+   
     public void update(Plat p) {
 
         String sql = "UPDATE plat SET nom=?, prix=?, disponible=?, idmenu=?, image=? WHERE idplat=?";
@@ -61,16 +61,15 @@ public class PlatDAO {
         }
     }
 
-    // ================= DELETE =================
+  
     public void delete(int id) {
         try {
-            // 1. Supprimer les lignes liées dans ligcmd
+            
             String sqlLignes = "DELETE FROM ligcmd WHERE idplat=?";
             PreparedStatement ps1 = cnx.prepareStatement(sqlLignes);
             ps1.setInt(1, id);
             ps1.executeUpdate();
 
-            // 2. Supprimer le plat
             String sqlPlat = "DELETE FROM plat WHERE idplat=?";
             PreparedStatement ps2 = cnx.prepareStatement(sqlPlat);
             ps2.setInt(1, id);
@@ -83,7 +82,7 @@ public class PlatDAO {
     }
 
 
-    // ================= GET ALL =================
+   
     public List<Plat> getAll() {
 
         List<Plat> list = new ArrayList<>();
@@ -117,7 +116,7 @@ public class PlatDAO {
         return list;
     }
 
-    // ================= FIND BY ID =================
+ 
     public Plat findById(int id) {
 
         String sql = "SELECT * FROM plat WHERE idplat=?";

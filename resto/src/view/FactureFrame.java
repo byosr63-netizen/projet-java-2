@@ -21,7 +21,7 @@ public class FactureFrame extends JFrame {
 
         setLayout(new BorderLayout());
 
-        // ================= HEADER =================
+        
         JPanel header = new JPanel();
         header.setBackground(new Color(236, 160, 180));
 
@@ -32,7 +32,7 @@ public class FactureFrame extends JFrame {
         header.add(title);
         add(header, BorderLayout.NORTH);
 
-        // ================= TABLE =================
+        
         model = new DefaultTableModel();
 
         model.addColumn("Détail");
@@ -50,7 +50,7 @@ public class FactureFrame extends JFrame {
 
         add(new JScrollPane(table), BorderLayout.CENTER);
 
-        // ================= FOOTER =================
+      
         totalLabel.setText("Merci pour votre visite 🍽");
         totalLabel.setHorizontalAlignment(SwingConstants.CENTER);
         totalLabel.setFont(new Font("Arial", Font.BOLD, 14));

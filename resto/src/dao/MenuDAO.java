@@ -11,7 +11,7 @@ public class MenuDAO {
 
     Connection cnx = SingletonConnection.getConnection();
 
-    // ================= INSERT =================
+  
     public void insert(Menu m) {
 
         String sql = "INSERT INTO menu (nom, description) VALUES (?, ?)";
@@ -34,7 +34,7 @@ public class MenuDAO {
         }
     }
 
-    // ================= UPDATE =================
+ 
     public void update(Menu m) {
 
         String sql = "UPDATE menu SET nom=?, description=? WHERE idmenu=?";
@@ -54,7 +54,7 @@ public class MenuDAO {
         }
     }
 
-    // ================= DELETE =================
+  
     public void delete(Menu m) {
 
         String sql = "DELETE FROM menu WHERE idmenu=?";
@@ -72,7 +72,7 @@ public class MenuDAO {
         }
     }
 
-    // ================= FIND BY ID =================
+ 
     public Menu findById(int id) {
 
         String sql = "SELECT * FROM menu WHERE idmenu=?";
@@ -103,7 +103,7 @@ public class MenuDAO {
         return null;
     }
 
-    // ================= GET ALL =================
+   
     public List<Menu> getAll() {
 
         List<Menu> list = new ArrayList<>();

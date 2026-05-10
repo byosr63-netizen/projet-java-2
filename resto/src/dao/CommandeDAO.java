@@ -28,7 +28,6 @@ public class CommandeDAO implements Idao<Commande> {
 
             ps.executeUpdate();
 
-            // ✅ récupérer ID généré automatiquement
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
                 c.setIdcommande(rs.getInt(1));

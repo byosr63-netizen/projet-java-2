@@ -22,7 +22,6 @@ public class LoginFrame extends JFrame {
         BackgroundPanel panel = new BackgroundPanel("/image/bg.jpg");
         panel.setLayout(null);
 
-        // ================= TITLE =================
         JLabel title = new JLabel("LOGIN");
         title.setBounds(160, 80, 200, 40);
 
@@ -30,7 +29,7 @@ public class LoginFrame extends JFrame {
 
         panel.add(title);
 
-        // ================= USERNAME =================
+     
         JLabel userLabel = new JLabel("Username");
         userLabel.setBounds(70, 180, 200, 25);
 
@@ -45,7 +44,6 @@ public class LoginFrame extends JFrame {
 
         panel.add(userField);
 
-        // ================= PASSWORD =================
         JLabel passLabel = new JLabel("Password");
         passLabel.setBounds(70, 270, 200, 25);
 
@@ -60,7 +58,7 @@ public class LoginFrame extends JFrame {
 
         panel.add(passField);
 
-        // ================= BUTTON =================
+      
         JButton loginBtn = new JButton("Connexion");
         loginBtn.setBounds(120, 470, 200, 45);
 
@@ -68,7 +66,7 @@ public class LoginFrame extends JFrame {
 
         panel.add(loginBtn);
 
-        // ================= ACTION =================
+       
         loginBtn.addActionListener(e -> {
 
             String username = userField.getText();

@@ -12,7 +12,7 @@ public class PanierPanel extends JPanel {
     private JLabel totalLabel = new JLabel("TOTAL: 0 DT");
     private int idClient;
     private int idServeur;
-    private String role; // ✅ "CLIENT" ou "SERVEUR"
+    private String role;
 
     public PanierPanel(CommandeController controller,
                        int idClient, int idServeur, String role) {
@@ -55,7 +55,7 @@ public class PanierPanel extends JPanel {
         });
     }
 
-    // ✅ refresh avec role
+   
     public void refresh(CommandeController controller) {
         List<LigneCommande> panier = controller.getPanier(role);
         area.setText("");

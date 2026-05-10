@@ -11,7 +11,7 @@ import java.util.List;
 
 public class CommandeController {
 
-    // ================= SINGLETON =================
+ 
     private static CommandeController instance;
 
     public static CommandeController getInstance() {
@@ -19,21 +19,18 @@ public class CommandeController {
         return instance;
     }
 
-    // ================= DAO =================
     private CommandeDAO commandeDAO = new CommandeDAO();
     private LigneCommandeDAO ligneDAO = new LigneCommandeDAO();
     private PlatDAO platDAO = new PlatDAO();
 
-    // ================= DEUX PANIERS =================
     private List<LigneCommande> panierClient   = new ArrayList<>();
     private List<LigneCommande> panierServeuse = new ArrayList<>();
 
-    // ================= GET PANIER PAR ROLE =================
     public List<LigneCommande> getPanier(String role) {
         return "SERVEUR".equals(role) ? panierServeuse : panierClient;
     }
 
-    // ================= AJOUTER =================
+   
     public void ajouterPlatAuPanier(int idPlat, String role) {
         List<LigneCommande> panier = getPanier(role);
         Plat p = platDAO.findById(idPlat);
@@ -47,7 +44,6 @@ public class CommandeController {
         panier.add(new LigneCommande(0, idPlat, 1, p.getPrix()));
     }
 
-    // ================= SUPPRIMER =================
     public void supprimerPlatDuPanier(int idPlat, String role) {
         List<LigneCommande> panier = getPanier(role);
         LigneCommande target = null;
@@ -61,7 +57,7 @@ public class CommandeController {
         if (target != null) panier.remove(target);
     }
 
-    // ================= VALIDER =================
+  
     public Commande validerCommande(int idCommande, int idClient,
                                      int idServeur, String role) {
         List<LigneCommande> panier = getPanier(role);
@@ -80,7 +76,7 @@ public class CommandeController {
         return c;
     }
 
-    // ================= TOTAL PANIER =================
+
     public double calculerTotalPanier(String role) {
         double total = 0;
         for (LigneCommande l : getPanier(role)) {
@@ -90,7 +86,7 @@ public class CommandeController {
         return total;
     }
 
-    // ================= COMMANDES =================
+
     public Commande getCommandeById(int id) {
         return commandeDAO.findById(id);
     }
@@ -107,7 +103,7 @@ public class CommandeController {
     public List<Commande> getPrete()    { return getCommandesParEtat(EtatCommande.PRETE); }
     public List<Commande> getServie()   { return getCommandesParEtat(EtatCommande.SERVIE); }
 
-    // ================= ETATS =================
+    
     public boolean passerEnCours(int id) { return updateEtat(id, EtatCommande.EN_COURS); }
     public boolean passerPrete(int id)   { return updateEtat(id, EtatCommande.PRETE); }
     public boolean passerServie(int id)  { return updateEtat(id, EtatCommande.SERVIE); }
@@ -129,7 +125,7 @@ public class CommandeController {
         return true;
     }
 
-    // ================= FACTURE =================
+  
     public double getTotalCommande(int idCommande) {
         double total = 0;
         for (LigneCommande l : ligneDAO.getAll())
@@ -138,7 +134,6 @@ public class CommandeController {
         return total;
     }
 
-    // ================= PLATS =================
     public List<Plat> getAllPlats() { return platDAO.getAll(); }
 
     public boolean ajouterPlat(int id, String nom, double prix,

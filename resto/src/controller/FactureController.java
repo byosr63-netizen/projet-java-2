@@ -26,7 +26,7 @@ public class FactureController {
         Facture exist = factureDAO.findByCommandeId(idCommande);
         if (exist != null) return exist;
 
-        // ✅ FIX IMPORTANT ICI
+       
         double total = commandeController.getTotalCommande(idCommande);
 
         Facture f = new Facture(
