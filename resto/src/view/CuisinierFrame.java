@@ -132,7 +132,7 @@ public class CuisinierFrame extends JFrame {
             }
             int id = extractId(modelCours.get(i));
             controller.passerPrete(id);
-            // ✅ Notification envoyée à la serveuse (via timer dans ServeuseFrame)
+            
             JOptionPane.showMessageDialog(this,
                 "Commande #" + id + " marquée PRÊTE !\nNotification envoyée à la serveuse.");
             refreshCommandes();

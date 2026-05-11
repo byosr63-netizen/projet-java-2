@@ -61,7 +61,7 @@ public class ClientFrame extends JFrame {
     private void loadPlats() {
         gridPanel.removeAll();
         for (Plat p : controller.getAllPlats()) {
-            gridPanel.add(new PlatCardPanel(p, controller, panierPanel, "CLIENT")); // ✅
+            gridPanel.add(new PlatCardPanel(p, controller, panierPanel, "CLIENT")); 
         }
         gridPanel.revalidate();
         gridPanel.repaint();

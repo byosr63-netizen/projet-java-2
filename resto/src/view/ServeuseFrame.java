@@ -52,7 +52,7 @@ public class ServeuseFrame extends JFrame {
         tabs.add("En cours",         panel(modelCours,  listCours));
         tabs.add("Prêtes",           panel(modelPrete,  listPrete));
         tabs.add("Servies",          panel(modelServie, listServie));
-        tabs.add("Passer commande",  panelCommander()); // ✅ NOUVEAU
+        tabs.add("Passer commande",  panelCommander()); 
         tabs.add("Menu",             panelMenu());
 
         add(tabs, BorderLayout.CENTER);

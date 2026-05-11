@@ -8,7 +8,7 @@ import java.awt.*;
 public class PlatCardPanel extends JPanel {
 
     public PlatCardPanel(Plat plat, CommandeController controller,
-                         PanierPanel panierPanel, String role) { // ✅ role ajouté
+                         PanierPanel panierPanel, String role) { 
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(Color.WHITE);

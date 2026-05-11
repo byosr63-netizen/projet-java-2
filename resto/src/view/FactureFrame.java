@@ -51,7 +51,7 @@ public class FactureFrame extends JFrame {
         add(new JScrollPane(table), BorderLayout.CENTER);
 
       
-        totalLabel.setText("Merci pour votre visite 🍽");
+        totalLabel.setText("Merci pour votre visite ");
         totalLabel.setHorizontalAlignment(SwingConstants.CENTER);
         totalLabel.setFont(new Font("Arial", Font.BOLD, 14));
 
