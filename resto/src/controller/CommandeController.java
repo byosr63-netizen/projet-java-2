@@ -2,7 +2,6 @@ package controller;
 
 import dao.CommandeDAO;
 import dao.LigneCommandeDAO;
-import dao.PlatDAO;
 import model.*;
 
 import java.time.LocalDateTime;
@@ -11,7 +10,6 @@ import java.util.List;
 
 public class CommandeController {
 
- 
     private static CommandeController instance;
 
     public static CommandeController getInstance() {
@@ -21,7 +19,7 @@ public class CommandeController {
 
     private CommandeDAO commandeDAO = new CommandeDAO();
     private LigneCommandeDAO ligneDAO = new LigneCommandeDAO();
-    private PlatDAO platDAO = new PlatDAO();
+    private PlatController platController = new PlatController(); 
 
     private List<LigneCommande> panierClient   = new ArrayList<>();
     private List<LigneCommande> panierServeuse = new ArrayList<>();
@@ -30,10 +28,9 @@ public class CommandeController {
         return "SERVEUR".equals(role) ? panierServeuse : panierClient;
     }
 
-   
     public void ajouterPlatAuPanier(int idPlat, String role) {
         List<LigneCommande> panier = getPanier(role);
-        Plat p = platDAO.findById(idPlat);
+        Plat p = platController.getPlatById(idPlat); 
         if (p == null || !p.isDisponible()) return;
         for (LigneCommande l : panier) {
             if (l.getIdplat() == idPlat) {
@@ -57,7 +54,6 @@ public class CommandeController {
         if (target != null) panier.remove(target);
     }
 
-  
     public Commande validerCommande(int idCommande, int idClient,
                                      int idServeur, String role) {
         List<LigneCommande> panier = getPanier(role);
@@ -76,16 +72,14 @@ public class CommandeController {
         return c;
     }
 
-
     public double calculerTotalPanier(String role) {
         double total = 0;
         for (LigneCommande l : getPanier(role)) {
-            Plat p = platDAO.findById(l.getIdplat());
+            Plat p = platController.getPlatById(l.getIdplat()); // ✅
             if (p != null) total += l.getQuantite() * p.getPrix();
         }
         return total;
     }
-
 
     public Commande getCommandeById(int id) {
         return commandeDAO.findById(id);
@@ -103,7 +97,6 @@ public class CommandeController {
     public List<Commande> getPrete()    { return getCommandesParEtat(EtatCommande.PRETE); }
     public List<Commande> getServie()   { return getCommandesParEtat(EtatCommande.SERVIE); }
 
-    
     public boolean passerEnCours(int id) { return updateEtat(id, EtatCommande.EN_COURS); }
     public boolean passerPrete(int id)   { return updateEtat(id, EtatCommande.PRETE); }
     public boolean passerServie(int id)  { return updateEtat(id, EtatCommande.SERVIE); }
@@ -125,7 +118,6 @@ public class CommandeController {
         return true;
     }
 
-  
     public double getTotalCommande(int idCommande) {
         double total = 0;
         for (LigneCommande l : ligneDAO.getAll())
@@ -134,30 +126,5 @@ public class CommandeController {
         return total;
     }
 
-    public List<Plat> getAllPlats() { return platDAO.getAll(); }
-
-    public boolean ajouterPlat(int id, String nom, double prix,
-                                boolean disponible, int idMenu, String image) {
-        if (nom == null || nom.isEmpty() || prix <= 0) return false;
-        platDAO.insert(new Plat(id, nom, prix, disponible, idMenu, image));
-        return true;
-    }
-
-    public boolean modifierPlat(int id, String nom, double prix,
-                                 boolean disponible, int idMenu, String image) {
-        Plat p = platDAO.findById(id);
-        if (p == null) return false;
-        p.setNom(nom); p.setPrix(prix);
-        p.setDisponible(disponible);
-        p.setIdmenu(idMenu); p.setImage(image);
-        platDAO.update(p);
-        return true;
-    }
-
-    public boolean supprimerPlat(int id) {
-        Plat p = platDAO.findById(id);
-        if (p == null) return false;
-        platDAO.delete(p.getIdplat());
-        return true;
-    }
+   
 }

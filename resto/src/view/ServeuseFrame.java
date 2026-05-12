@@ -3,6 +3,7 @@ package view;
 import controller.CommandeController;
 import controller.FactureController;
 import controller.MenuController;
+import controller.PlatController;
 import model.*;
 import util.ThemeUtils;
 
@@ -15,6 +16,7 @@ public class ServeuseFrame extends JFrame {
     private CommandeController controller = CommandeController.getInstance();
     private FactureController factureController = new FactureController();
     private MenuController menuController = new MenuController();
+    private PlatController platController = new PlatController(); 
 
     private DefaultListModel<String> modelRecues  = new DefaultListModel<>();
     private DefaultListModel<String> modelCours   = new DefaultListModel<>();
@@ -28,7 +30,6 @@ public class ServeuseFrame extends JFrame {
 
     private int lastSeenPreteCount = 0;
 
-    
     private PanierPanel panierServeuse = new PanierPanel(controller, 2, 2, "SERVEUR");
 
     public ServeuseFrame() {
@@ -52,7 +53,7 @@ public class ServeuseFrame extends JFrame {
         tabs.add("En cours",         panel(modelCours,  listCours));
         tabs.add("Prêtes",           panel(modelPrete,  listPrete));
         tabs.add("Servies",          panel(modelServie, listServie));
-        tabs.add("Passer commande",  panelCommander()); 
+        tabs.add("Passer commande",  panelCommander());
         tabs.add("Menu",             panelMenu());
 
         add(tabs, BorderLayout.CENTER);
@@ -60,9 +61,9 @@ public class ServeuseFrame extends JFrame {
         JPanel btns = new JPanel();
         ThemeUtils.stylePanel(btns);
 
-        JButton servir   = new JButton("Servir");
-        JButton facture  = new JButton("Facture");
-        JButton refresh  = new JButton("Actualiser");
+        JButton servir  = new JButton("Servir");
+        JButton facture = new JButton("Facture");
+        JButton refresh = new JButton("Actualiser");
 
         ThemeUtils.styleButton(servir);
         ThemeUtils.styleButton(facture);
@@ -101,7 +102,6 @@ public class ServeuseFrame extends JFrame {
         setVisible(true);
     }
 
-   
     private JPanel panelCommander() {
         JPanel p = new JPanel(new BorderLayout());
         ThemeUtils.stylePanel(p);
@@ -109,8 +109,8 @@ public class ServeuseFrame extends JFrame {
         JPanel gridPanel = new JPanel(new GridLayout(0, 3, 15, 15));
         gridPanel.setOpaque(false);
 
-        for (Plat plat : controller.getAllPlats()) {
-            gridPanel.add(new PlatCardPanel(plat, controller, panierServeuse, "SERVEUR")); // ✅
+        for (Plat plat : platController.getAllPlats()) { 
+            gridPanel.add(new PlatCardPanel(plat, controller, panierServeuse, "SERVEUR"));
         }
 
         JScrollPane scroll = new JScrollPane(gridPanel);
@@ -120,7 +120,6 @@ public class ServeuseFrame extends JFrame {
         return p;
     }
 
-  
     private JPanel panel(DefaultListModel<String> model, JList<String> list) {
         JPanel p = new JPanel(new BorderLayout());
         ThemeUtils.stylePanel(p);
@@ -128,9 +127,7 @@ public class ServeuseFrame extends JFrame {
         return p;
     }
 
- 
     private void refresh() {
-
         modelRecues.clear();
         modelCours.clear();
         modelPrete.clear();
@@ -149,7 +146,6 @@ public class ServeuseFrame extends JFrame {
     }
 
     private String formatCommande(Commande c) {
-
         StringBuilder sb = new StringBuilder();
         sb.append("Commande #").append(c.getIdcommande()).append(" | ");
 
@@ -157,7 +153,7 @@ public class ServeuseFrame extends JFrame {
 
         for (LigneCommande l : new dao.LigneCommandeDAO().getAll()) {
             if (l.getIdcommande() == c.getIdcommande()) {
-                Plat p = new dao.PlatDAO().findById(l.getIdplat());
+                Plat p = platController.getPlatById(l.getIdplat()); 
                 if (p != null) {
                     sb.append(p.getNom()).append(" x").append(l.getQuantite()).append(" • ");
                     found = true;
@@ -169,9 +165,7 @@ public class ServeuseFrame extends JFrame {
         return sb.toString();
     }
 
-   
     private JPanel panelMenu() {
-
         JPanel p = new JPanel(new BorderLayout());
         ThemeUtils.stylePanel(p);
 
@@ -188,7 +182,7 @@ public class ServeuseFrame extends JFrame {
 
         Runnable load = () -> {
             modelPlats.clear();
-            for (Plat pl : controller.getAllPlats())
+            for (Plat pl : platController.getAllPlats()) 
                 modelPlats.addElement(pl.getNom() + " | " + pl.getPrix() + " DT");
         };
 
@@ -198,7 +192,6 @@ public class ServeuseFrame extends JFrame {
         return p;
     }
 
-  
     private void checkNotifications() {
         int current = controller.getPrete().size();
         if (current > lastSeenPreteCount)
@@ -209,5 +202,4 @@ public class ServeuseFrame extends JFrame {
     private int extractId(String text) {
         return Integer.parseInt(text.split("#")[1].split(" ")[0]);
     }
-
 }
